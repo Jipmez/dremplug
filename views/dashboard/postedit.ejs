@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-    <title>Create Post</title>
+    <title>Edit Post</title>
     <!-- General CSS Files -->
     <link rel="stylesheet" href="/gati/css/app.min.css">
     <link rel="stylesheet" href="/gati/bundles/summernote/summernote-bs4.css">
@@ -64,10 +64,9 @@
                             <a href="/user/dashboard/create-post" class="nav-link"><i
                                     data-feather="check-circle"></i><span>Create Post</span></a>
                         </li>
-                        <!--   <li class="dropdown">
-                            <a href="contact.html" class="nav-link"><i data-feather="users"></i><span>Add
-                                    Contents</span></a>
-                        </li> -->
+                        <li class="dropdown">
+                            <a href="/user/logout" class="nav-link"><i data-feather="users"></i><span>LogOut</span></a>
+                        </li>
                     </ul>
                 </aside>
             </div>
@@ -117,7 +116,10 @@
                                                         name="content"><%= post.content %></textarea>
                                                 </div>
                                                 <script>
-                                                    CKEDITOR.replace('ckeditor');
+                                                    CKEDITOR.replace('content', {
+                                                        height: 300,
+                                                        filebrowserUploadUrl: "/user/dashboard/upload"
+                                                    });
                                                 </script>
                                             </div>
                                             <div class="form-group row mb-4">

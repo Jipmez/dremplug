@@ -76,8 +76,6 @@
     </style>
     <link rel="stylesheet" type="text/css" href="/css/appfabb.css?v=b14db496bb" media="screen" />
     <link rel="stylesheet" type="text/css" href="/css/postfabb.css?v=b14db496bb" media="screen" />
-    <meta name="description"
-        content="The market in my opinion is over extended. When I say over extended I mean it&#x27;s been going up for a while now. Dips should happen once in a while, but it didn’t." />
     <link rel="icon" href="../favicon.png" type="image/png" />
     <link rel="stylesheet" type="text/css" href="../public/cards.minfabb.css?v=b14db496bb">
 
@@ -323,9 +321,14 @@
                                                             <%= article.createdAt.toLocaleDateString() %></p>
                                                         <!-- Date format December 4, 2020 at 3:12 pm -->
                                                     </div>
-                                                    <div *ngIf="canEdit()" (click)="deleteComment(i)"><i
-                                                            class="fa fa-trash"></i>
-                                                    </div>
+
+                                                    <% if(locals.edit === true) {  %>
+                                                    <a href="/user/deletecomment/<%- article.id %>"
+                                                        class="m-icon-button filled in-share text-danger ml-5"
+                                                        rel="noopener" aria-label="Delete">
+                                                        <span class="icon-close" aria-hidden="true"></span>
+                                                    </a>
+                                                    <%} %>
                                                     <div class="reply-btn">
                                                         <!-- <a href="#" class="btn-reply text-uppercase">reply</a> -->
                                                     </div>
@@ -367,7 +370,8 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-primary">Post Reply</button>
+                                        <button type="submit" class="btn btn-primary">Post
+                                            Reply</button>
                                     </div>
 
                                 </form>
@@ -587,7 +591,8 @@
                                         class="m-subscribe-section__container">
                                         <div class="m-subscribe__form">
                                             <div class="pos-relative">
-                                                <label for="newsletter-input" class="sr-only">Your email address</label>
+                                                <label for="newsletter-input" class="sr-only">Your email
+                                                    address</label>
                                                 <input data-members-email id="newsletter-input"
                                                     class="m-input in-subscribe-section" type="email"
                                                     placeholder="Your email address" required />
@@ -600,7 +605,8 @@
                                                 <img src="/images/successfabb.png?v=b14db496bb" alt="Success!"
                                                     class="m-subscribe__success_icon">
                                                 <p class="m-heading__description in-newsletter-form">
-                                                    Now check your inbox and click the link to confirm your
+                                                    Now check your inbox and click the link to confirm
+                                                    your
                                                     subscription.
                                                 </p>
                                             </header>
@@ -609,7 +615,8 @@
                                             Please enter a valid email address
                                         </p>
                                         <p class="m-subscribe__error m-small-text">
-                                            Oops! There was an error sending the email, please try later.
+                                            Oops! There was an error sending the email, please try
+                                            later.
                                         </p>
                                     </form>
                                 </div>

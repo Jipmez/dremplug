@@ -64,7 +64,7 @@ const Editpost = async function (req, res) {
       description: title,
       content: dompurify.sanitize(content),
       tags: tags,
-      image: im,
+      image: pic,
       status: status,
     });
   } else {
@@ -120,13 +120,14 @@ const createPost = async function (req, res) {
   try {
     if (req.files) {
       let image = req.files.image;
-      image.mv("./public/uploads/" + image.name);
+      const im = `${uuid()}-${image.name}`;
+      image.mv("./public/uploads/" + im);
 
       const title = req.body.title;
       const content = req.body.content;
       const tags = req.body.tags;
       const status = req.body.status;
-      const pic = image.name;
+      const pic = im;
 
       await req.db.posts.create({
         userId: req.state.id,
@@ -167,4 +168,37 @@ const createPost = async function (req, res) {
   } */
 };
 
-module.exports = { renderPostPage, createPost, renderEditPage, Editpost };
+const deleteComment = async function (req, res) {
+  const data = await req.db.comments.findOne({
+    where: {
+      id: req.params.id,
+    },
+  });
+
+  data.destroy();
+
+  res.redirect("/");
+};
+
+const upload = async function (req, res) {
+  let image = req.files.upload;
+
+  const im = `${uuid()}-${image.name}`;
+
+  image.mv("./public/uploads/" + im);
+
+  var url = `/uploads/${im}`;
+  res.json({
+    uploaded: 1,
+    fileName: im,
+    url: url,
+  });
+};
+module.exports = {
+  renderPostPage,
+  upload,
+  createPost,
+  renderEditPage,
+  Editpost,
+  deleteComment,
+};

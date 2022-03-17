@@ -1,7 +1,7 @@
 const DataHandlerService = require("../../services/DataHandler.service");
 const { TokenService } = require("../../services/token.service");
 const { HashService } = require("../../services/hash.service");
-
+const fs = require("fs");
 const index = async function (req, res) {
   let param = req.params.id ? req.params.id : 1;
   const limit = 10;
@@ -45,6 +45,26 @@ const index = async function (req, res) {
   );
 };
 
+const edut = async function (req, res) {
+  if (!req.cookies.access_token) {
+    return false;
+  }
+  this._token = req.cookies.access_token;
+
+  const decodedToken = await TokenService.verify(this._token);
+
+  const user = await req.db.User.findOne({
+    where: {
+      uuid: decodedToken.id,
+    },
+  });
+
+  if (!user || !user.id) {
+    return false;
+  }
+
+  return true;
+};
 const show = async function (req, res) {
   try {
     const data = await req.db.posts.findOne({
@@ -53,15 +73,16 @@ const show = async function (req, res) {
       },
       include: [{ model: req.db.comments }],
     });
-    data.update({ views: data.views + 1 });
 
     const tags = await req.db.tags.findAll();
+
+    const edit = await edut(req, res);
 
     return DataHandlerService.response(
       res,
       200,
       "",
-      { content: data, tags: tags },
+      { content: data, tags: tags, edit: edit },
       "",
       "show",
       "render"
@@ -330,12 +351,19 @@ const renderDashboardStatus = async function (req, res) {
 };
 
 const deletePost = async function (req, res) {
-  await req.db.posts.destroy({
+  const data = await req.db.posts.findOne({
     where: {
       id: req.params.id,
     },
   });
-  res.redirect("/user/dashbaord/index");
+  fs.unlinkSync(`./public/uploads/${data.image}`);
+  data.destroy();
+  await req.db.comments.destroy({
+    where: {
+      postsId: req.params.id,
+    },
+  });
+  res.redirect("/user/dashboard/index");
 };
 
 const featPost = async function (req, res) {
@@ -349,9 +377,29 @@ const featPost = async function (req, res) {
   res.redirect("/user/dashboard/index");
 };
 
+const tag = async function (req, res) {
+  const data = await req.db.posts.findAll({
+    where: {
+      tags: req.params.tag,
+    },
+    include: [{ model: req.db.User }],
+  });
+
+  const tags = await req.db.tags.findAll();
+
+  return DataHandlerService.response(
+    res,
+    200,
+    "",
+    { post: data, tag: req.params.tag, tags: tags },
+    "",
+    "tag",
+    "render"
+  );
+};
 module.exports = {
   createUser,
-
+  tag,
   index,
   getUsers,
   loginUser,

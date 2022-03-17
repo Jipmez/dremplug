@@ -11,6 +11,7 @@ module.exports = class TemplateRoute {
     this.route.get("/", UserController.index);
     this.route.get("/page/:id", UserController.index);
     this.route.get("/articles/:uo", UserController.show);
+    this.route.get("/tag/:tag", UserController.tag);
     this.route.post("/articles/:uo", UserController.comment);
 
     // user routes
@@ -54,10 +55,22 @@ module.exports = class TemplateRoute {
       PostController.Editpost
     );
 
+    this.route.get(
+      "/user/deletecomment/:id",
+      async (req, res, next) => await this._protection(req, res, next),
+      PostController.deleteComment
+    );
+
     this.route.post(
       "/user/dashboard/create-post",
       async (req, res, next) => await this._protection(req, res, next),
       PostController.createPost
+    );
+
+    this.route.post(
+      "/user/dashboard/upload",
+      async (req, res, next) => await this._protection(req, res, next),
+      PostController.upload
     );
 
     this.route.post(
